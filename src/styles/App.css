@@ -1,0 +1,335 @@
+html,
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  line-height: 1.4;
+  font-family: arial, sans-serif;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+nav ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+ins {
+  background-color: #ff9;
+  color: #000;
+  text-decoration: none;
+}
+mark {
+  background-color: #ff9;
+  font-style: italic;
+  font-weight: bold;
+}
+del {
+  text-decoration: line-through;
+}
+abbr[title],
+dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #cccccc;
+  margin: 1em 0;
+  padding: 0;
+}
+input,
+select {
+  vertical-align: middle;
+  margin: 0 5px 0 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* APPLICATION STYLES */
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500");
+body {
+  font-size: 14px;
+  padding: 22px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #f3f3f3;
+  font-family: "Roboto", sans-serif;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container {
+  display: flex;
+}
+
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0;
+  list-style: none;
+  padding: 0;
+  margin: -5px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.card-list__item {
+  display: flex;
+  font-size: 14px;
+  line-height: 1.6;
+  width: 20%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.card-list__name-wrap {
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  padding: 5px;
+  background: #fff;
+}
+
+.card-list__name,
+.card-item__id-info {
+  margin: 5px 0;
+}
+
+.card-list__character-specs {
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  padding: 5px;
+  background: #fff;
+  margin-top: -1px;
+}
+
+.card-list__character-spec-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-list__spec {
+  font-weight: 500;
+}
+
+.card-list__spec::after {
+  content: ": ";
+}
+
+.card-list__spec-value {
+  text-align: right;
+  font-size: 13px;
+}
+
+.card-list__photo {
+  font-size: 0;
+  width: 200px;
+  height: 200px;
+}
+
+.card-list__item-wrap {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: auto;
+  list-style: none;
+  background: #fff;
+  padding: 8px;
+  border-radius: 1px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+.pagination__item {
+  width: 25px;
+  height: 25px;
+  padding: 4px;
+  text-align: center;
+  line-height: 25px;
+  border: 1px solid #ddd;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination__item_active {
+  border-color: goldenrod;
+}
+
+.pagination__item:hover {
+  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* ASIDE */
+.sidebar {
+  background: #fff;
+  padding: 15px 15px;
+  border: 1px solid #ddd;
+  list-style-type: none;
+  margin-right: 20px;
+  max-width: 180px;
+  min-width: 180px;
+}
+
+.filter + .filter {
+  margin-top: 20px;
+}
+
+.filter__item {
+  display: block;
+}
+
+.filter__type-head {
+  margin: 10px 0 2px;
+  font-size: 16px;
+}
+
+.filter__heading {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.filter__item-wrap {
+  margin-bottom: 10px;
+}
+
+.filter section {
+  margin-bottom: 20px;
+}
+
+.filter__btn {
+  background: #eee;
+  border: 1px solid #ccc;
+  margin-right: 12px;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: all 100ms ease-in-out;
+}
+
+.filter__btn:hover {
+  border-color: #888;
+}
+
+.filter__btn a {
+  text-decoration: none;
+  color: #333;
+}
