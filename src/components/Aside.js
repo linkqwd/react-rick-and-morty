@@ -121,7 +121,7 @@ export const Aside = props => {
           Submit
         </button>
         <button className="filter__btn" type="button">
-          <a href="/">Reset</a>
+          <a href="/react-rick-and-morty/">Reset</a>
         </button>
       </form>
     </aside>
