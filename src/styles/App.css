@@ -297,6 +297,10 @@ main {
   display: block;
 }
 
+.filter__type-head:first-letter {
+  text-transform: capitalize;
+}
+
 .filter__type-head {
   margin: 10px 0 2px;
   font-size: 16px;

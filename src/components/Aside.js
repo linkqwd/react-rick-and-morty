@@ -1,6 +1,35 @@
 import React from "react";
 
-export const Aside = props => {
+const filterOptions = {
+  species: ["all", "human", "alien", "humanoid", "mytholog", "animal", "robot"],
+  gender: ["all", "male", "female", "genderless", "unknown"],
+  status: ["all", "alive", "dead", "unknown"]
+};
+
+const FormFieldset = filter => {
+  const filterName = Object.keys(filter)[0];
+
+  return (
+    <fieldset className="filter__item-wrap">
+      <legend className="filter__type-head">{filterName}</legend>
+      {filter[Object.keys(filter)].map((item, i) => {
+        return (
+          <label key={i} className="filter__item">
+            <input
+              type="radio"
+              name={filterName}
+              value={item === "all" ? "" : item}
+              defaultChecked={item === "all" ? true : false}
+            />
+            {item}
+          </label>
+        );
+      })}
+    </fieldset>
+  );
+};
+
+const Aside = props => {
   return (
     <aside className="sidebar">
       <form onSubmit={props.formSubmitHandler} className="filter">
@@ -43,80 +72,11 @@ export const Aside = props => {
 
         <section>
           <h2 className="filter__heading">Filtering:</h2>
-          <fieldset className="filter__item-wrap">
-            <legend className="filter__type-head">Species</legend>
-            <label className="filter__item">
-              <input type="radio" name="species" defaultChecked value="" />
-              All
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="human" />
-              Human
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="alien" />
-              Alien
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="humanoid" />
-              Humanoid
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="mytholog" />
-              Mytholog
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="animal" />
-              Animal
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="species" value="robot" />
-              Robot
-            </label>
-          </fieldset>
-          <fieldset className="filter__item-wrap">
-            <legend className="filter__type-head">Status</legend>
-            <label className="filter__item">
-              <input type="radio" name="status" defaultChecked value="" />
-              All
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="status" value="alive" />
-              Alive
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="status" value="dead" />
-              Dead
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="status" value="unknown" />
-              Unknown
-            </label>
-          </fieldset>
-          <fieldset className="filter__item-wrap">
-            <legend className="filter__type-head">Gender</legend>
-            <label className="filter__item">
-              <input type="radio" name="gender" defaultChecked value="" />
-              All
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="gender" value="male" />
-              Male
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="gender" value="female" />
-              Female
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="gender" value="genderless" />
-              Genderless
-            </label>
-            <label className="filter__item">
-              <input type="radio" name="gender" value="unknown" />
-              Unknown
-            </label>
-          </fieldset>
+          <FormFieldset species={filterOptions.species} />
+          <FormFieldset status={filterOptions.status} />
+          <FormFieldset gender={filterOptions.gender} />
         </section>
+
         <button className="filter__btn" type="submit">
           Submit
         </button>
@@ -127,3 +87,5 @@ export const Aside = props => {
     </aside>
   );
 };
+
+export default Aside;

@@ -1,34 +1,42 @@
 import React, { Component } from "react";
-import DataRetriever from "../utils/DataRetriever";
-import SerializeArray from "../utils/SerializeArray";
+import apiDataCall from "../utils/apiDataCall";
+import parseForm from "../utils/parseForm";
 import { Characters } from "./Characters";
 import { Pagination } from "./Pagination";
-import { Aside } from "./Aside";
+import Aside from "./Aside";
+
+const appStatus = {
+  dataNotLoaded: "notLoaded",
+  dataLoaded: "ok"
+};
 
 class App extends Component {
   state = {
-    status: "notLoaded",
+    status: appStatus.dataNotLoaded,
     query: "",
-    currentPage: 1
+    currentPage: 1,
+    statusText: "Loading..."
   };
 
   componentDidMount() {
-    DataRetriever("custom", this.state.query).then(response => {
-      this.updateState(response);
-    });
-  }
-
-  updateState(data) {
-    this.setState({
-      charactersData: data.results,
-      pagesCount: data.info.pages,
-      currentPage: data.currentPage || 1,
-      query: data.query || this.state.query,
-      status: "ok"
-    });
+    apiDataCall(this.state.query)
+      .then(response => {
+        this.setState({
+          charactersData: response.results,
+          pagesCount: response.info.pages,
+          status: appStatus.dataLoaded
+        });
+      })
+      .catch(reason => {
+        this.setState({
+          status: reason.status,
+          statusText: reason.statusText
+        });
+      });
   }
 
   ascDescArraySorter = (arr, type) => {
+    console.log(arr);
     switch (type) {
       case "asc-name":
         return arr.sort((b, a) => (b.name < a.name ? -1 : 1));
@@ -39,7 +47,7 @@ class App extends Component {
       case "desc-id":
         return arr.sort((a, b) => (b.id < a.id ? -1 : 1));
       default:
-        console.log("sorting error");
+        return arr;
     }
   };
 
@@ -47,28 +55,37 @@ class App extends Component {
     const clickedElementId = +e.target.id;
     const queryWithPagination = `page=${clickedElementId}&${this.state.query}`;
 
-    DataRetriever("custom", queryWithPagination).then(response => {
-      response.currentPage = clickedElementId;
-      this.updateState(response);
+    apiDataCall(`?${queryWithPagination}`).then(response => {
+      this.setState({
+        charactersData: response.results,
+        pagesCount: response.info.pages,
+        currentPage: clickedElementId
+      });
     });
   };
 
   formSubmitHandler = e => {
     e.preventDefault();
 
-    const formDataArray = SerializeArray(e.target);
-    const characterIdSearchValue = formDataArray.filter(
+    const formDataArray = parseForm(e.target);
+
+    const characterIdSearchValue = formDataArray.find(
       item => item.name === "name"
-    )[0].value;
+    ).value;
 
     if (Number(characterIdSearchValue)) {
-      DataRetriever("byId", characterIdSearchValue)
+      apiDataCall(`/${characterIdSearchValue}`)
         .then(response => {
-          this.updateState({ info: {}, results: [response] });
-        })
-        .catch(() => {
           this.setState({
-            status: "404"
+            charactersData: [response],
+            pagesCount: null,
+            status: appStatus.dataLoaded
+          });
+        })
+        .catch(reason => {
+          this.setState({
+            status: reason.status,
+            statusText: reason.statusText
           });
         });
 
@@ -79,39 +96,52 @@ class App extends Component {
       .map(item => (item.value ? `${item.name}=${item.value}&` : ""))
       .join("");
 
-    const sortingOption = formDataArray.filter(item => item.name === "sort")[0]
+    const sortingOption = formDataArray.find(item => item.name === "sort")
       .value;
 
-    DataRetriever("custom", query)
+    apiDataCall(`?${query}`)
       .then(response => {
         if (sortingOption) {
-          response.results = this.ascDescArraySorter(
+          const sortedArrayOfChars = this.ascDescArraySorter(
             response.results,
             sortingOption
           );
+
+          this.setState({
+            charactersData: sortedArrayOfChars
+          });
+        } else {
+          this.setState({
+            charactersData: response.results
+          });
         }
 
-        response.query = query;
-        this.updateState(response);
-      })
-      .catch(() => {
         this.setState({
-          status: "404"
+          pagesCount: response.info.pages,
+          status: appStatus.dataLoaded,
+          query: query,
+          currentPage: 1
+        });
+      })
+      .catch(reason => {
+        this.setState({
+          status: reason.status,
+          statusText: reason.statusText
         });
       });
   };
 
   render() {
-    if (this.state.status === "notLoaded") {
+    if (this.state.status === appStatus.dataNotLoaded) {
       return (
         <div className="container">
           <Aside formSubmitHandler={this.formSubmitHandler} />
           <main>
-            <h2>Loading...</h2>
+            <h2>{this.state.statusText}</h2>
           </main>
         </div>
       );
-    } else if (this.state.status === "ok") {
+    } else if (this.state.status === appStatus.dataLoaded) {
       return (
         <div className="container">
           <Aside formSubmitHandler={this.formSubmitHandler} />
@@ -125,12 +155,12 @@ class App extends Component {
           </main>
         </div>
       );
-    } else if (this.state.status === "404") {
+    } else if (this.state.status === 404) {
       return (
         <div className="container">
           <Aside formSubmitHandler={this.formSubmitHandler} />
           <main>
-            <h2>Not found</h2>
+            <h2>{this.state.statusText}</h2>
           </main>
         </div>
       );

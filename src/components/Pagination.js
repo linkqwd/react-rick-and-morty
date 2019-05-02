@@ -1,7 +1,7 @@
 import React from "react";
 
 export const Pagination = props => {
-  if (props.pagesCount === 0 || props.pagesCount === undefined) return "";
+  if (!props.pagesCount || props.pagesCount === 1) return "";
 
   let paginationElements = [];
 
