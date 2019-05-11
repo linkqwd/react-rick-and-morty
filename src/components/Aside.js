@@ -1,25 +1,39 @@
 import React from "react";
 
-const filterOptions = {
-  species: ["all", "human", "alien", "humanoid", "mytholog", "animal", "robot"],
-  gender: ["all", "male", "female", "genderless", "unknown"],
-  status: ["all", "alive", "dead", "unknown"]
-};
+const filterOptions = [
+  {
+    name: "species",
+    options: [
+      "all",
+      "human",
+      "alien",
+      "humanoid",
+      "mytholog",
+      "animal",
+      "robot"
+    ]
+  },
+  {
+    name: "gender",
+    options: ["all", "male", "female", "genderless", "unknown"]
+  },
+  { name: "status", options: ["all", "alive", "dead", "unknown"] }
+];
 
-const FormFieldset = filter => {
-  const filterName = Object.keys(filter)[0];
+const FormFilterField = filter => {
+  const currentFilter = filter.filter;
 
   return (
     <fieldset className="filter__item-wrap">
-      <legend className="filter__type-head">{filterName}</legend>
-      {filter[Object.keys(filter)].map((item, i) => {
+      <legend className="filter__type-head">{currentFilter.name}</legend>
+      {currentFilter.options.map((item, i) => {
         return (
           <label key={i} className="filter__item">
             <input
               type="radio"
-              name={filterName}
+              name={currentFilter.name}
               value={item === "all" ? "" : item}
-              defaultChecked={item === "all" ? true : false}
+              defaultChecked={item === "all"}
             />
             {item}
           </label>
@@ -36,11 +50,10 @@ const Aside = props => {
         <section>
           <h2 className="filter__heading">Search:</h2>
           <label>
-            <input
-              type="search"
-              name="name"
-              placeholder="Search by name or ID"
-            />
+            <input type="search" name="name" placeholder="Search by name" />
+          </label>
+          <label>
+            <input type="search" name="id" placeholder="Search by ID" />
           </label>
         </section>
 
@@ -72,9 +85,9 @@ const Aside = props => {
 
         <section>
           <h2 className="filter__heading">Filtering:</h2>
-          <FormFieldset species={filterOptions.species} />
-          <FormFieldset status={filterOptions.status} />
-          <FormFieldset gender={filterOptions.gender} />
+          {filterOptions.map((item, i) => (
+            <FormFilterField key={i} filter={item} />
+          ))}
         </section>
 
         <button className="filter__btn" type="submit">

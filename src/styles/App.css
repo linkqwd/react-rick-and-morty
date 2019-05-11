@@ -170,6 +170,11 @@ main {
   flex-wrap: wrap;
 }
 
+label + label {
+  display: block;
+  padding-top: 2px;
+}
+
 .container {
   display: flex;
 }

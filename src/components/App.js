@@ -5,14 +5,14 @@ import { Characters } from "./Characters";
 import { Pagination } from "./Pagination";
 import Aside from "./Aside";
 
-const appStatus = {
+const APPSTATUS = {
   dataNotLoaded: "notLoaded",
   dataLoaded: "ok"
 };
 
 class App extends Component {
   state = {
-    status: appStatus.dataNotLoaded,
+    status: APPSTATUS.dataNotLoaded,
     query: "",
     currentPage: 1,
     statusText: "Loading..."
@@ -24,19 +24,18 @@ class App extends Component {
         this.setState({
           charactersData: response.results,
           pagesCount: response.info.pages,
-          status: appStatus.dataLoaded
+          status: APPSTATUS.dataLoaded
         });
       })
       .catch(reason => {
         this.setState({
-          status: reason.status,
+          status: APPSTATUS.dataNotLoaded,
           statusText: reason.statusText
         });
       });
   }
 
   ascDescArraySorter = (arr, type) => {
-    console.log(arr);
     switch (type) {
       case "asc-name":
         return arr.sort((b, a) => (b.name < a.name ? -1 : 1));
@@ -68,28 +67,27 @@ class App extends Component {
     e.preventDefault();
 
     const formDataArray = parseForm(e.target);
+    console.log(formDataArray);
 
     const characterIdSearchValue = formDataArray.find(
-      item => item.name === "name"
+      item => item.name === "id"
     ).value;
 
-    if (Number(characterIdSearchValue)) {
-      apiDataCall(`/${characterIdSearchValue}`)
+    if (+characterIdSearchValue) {
+      return apiDataCall(`/${characterIdSearchValue}`)
         .then(response => {
           this.setState({
             charactersData: [response],
             pagesCount: null,
-            status: appStatus.dataLoaded
+            status: APPSTATUS.dataLoaded
           });
         })
         .catch(reason => {
           this.setState({
-            status: reason.status,
+            status: APPSTATUS.dataNotLoaded,
             statusText: reason.statusText
           });
         });
-
-      return;
     }
 
     const query = formDataArray
@@ -118,60 +116,50 @@ class App extends Component {
 
         this.setState({
           pagesCount: response.info.pages,
-          status: appStatus.dataLoaded,
+          status: APPSTATUS.dataLoaded,
           query: query,
           currentPage: 1
         });
       })
       .catch(reason => {
         this.setState({
-          status: reason.status,
+          status: APPSTATUS.dataNotLoaded,
           statusText: reason.statusText
         });
       });
   };
 
+  handleEmptyContent = error => {
+    return (
+      <div className="container">
+        <Aside formSubmitHandler={this.formSubmitHandler} />
+        <main>
+          <h2>{error}</h2>
+        </main>
+      </div>
+    );
+  };
+
   render() {
-    if (this.state.status === appStatus.dataNotLoaded) {
-      return (
-        <div className="container">
-          <Aside formSubmitHandler={this.formSubmitHandler} />
-          <main>
-            <h2>{this.state.statusText}</h2>
-          </main>
-        </div>
-      );
-    } else if (this.state.status === appStatus.dataLoaded) {
-      return (
-        <div className="container">
-          <Aside formSubmitHandler={this.formSubmitHandler} />
-          <main>
-            <Characters charactersData={this.state.charactersData} />
-            <Pagination
-              pagesCount={this.state.pagesCount}
-              currentPage={this.state.currentPage}
-              onClick={this.paginationClickHandler}
-            />
-          </main>
-        </div>
-      );
-    } else if (this.state.status === 404) {
-      return (
-        <div className="container">
-          <Aside formSubmitHandler={this.formSubmitHandler} />
-          <main>
-            <h2>{this.state.statusText}</h2>
-          </main>
-        </div>
-      );
-    } else {
-      return (
-        <div className="container">
-          <main>
-            <h2>Unkown error while rendering</h2>
-          </main>
-        </div>
-      );
+    switch (this.state.status) {
+      case APPSTATUS.dataNotLoaded:
+        return this.handleEmptyContent(this.state.statusText);
+      case APPSTATUS.dataLoaded:
+        return (
+          <div className="container">
+            <Aside formSubmitHandler={this.formSubmitHandler} />
+            <main>
+              <Characters charactersData={this.state.charactersData} />
+              <Pagination
+                pagesCount={this.state.pagesCount}
+                currentPage={this.state.currentPage}
+                onClick={this.paginationClickHandler}
+              />
+            </main>
+          </div>
+        );
+      default:
+        return this.handleEmptyContent(this.state.statusText);
     }
   }
 }
